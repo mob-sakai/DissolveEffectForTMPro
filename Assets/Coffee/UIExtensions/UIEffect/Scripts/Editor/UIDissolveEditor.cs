@@ -12,6 +12,8 @@ namespace Coffee.UIExtensions.Editors
 	[CanEditMultipleObjects]
 	public class UIDissolveEditor : Editor
 	{
+		static int s_NoiseTexId;
+
 		//################################
 		// Public/Protected Members.
 		//################################
@@ -33,6 +35,8 @@ namespace Coffee.UIExtensions.Editors
 			var player = serializedObject.FindProperty("m_Player");
 			_spDuration = player.FindPropertyRelative("duration");
 			_spUpdateMode = player.FindPropertyRelative("updateMode");
+
+			s_NoiseTexId = Shader.PropertyToID ("_NoiseTex");
 		}
 
 
@@ -41,6 +45,29 @@ namespace Coffee.UIExtensions.Editors
 		/// </summary>
 		public override void OnInspectorGUI()
 		{
+			foreach (var d in targets.Cast<UIDissolve> ())
+			{
+				var mat = d.material;
+				if (d.isTMPro && mat && mat.HasProperty(s_NoiseTexId))
+				{
+					ColorMode colorMode =
+								mat.IsKeywordEnabled ("ADD") ? ColorMode.Add
+										: mat.IsKeywordEnabled ("SUBTRACT") ? ColorMode.Subtract
+										: mat.IsKeywordEnabled ("FILL") ? ColorMode.Fill
+										: ColorMode.Multiply;
+
+					Texture noiseTexture = mat.GetTexture(s_NoiseTexId);
+
+					if (d.colorMode != colorMode || d.noiseTexture != noiseTexture)
+					{
+						var so = new SerializedObject (d);
+						so.FindProperty ("m_ColorMode").intValue = (int)colorMode;
+						so.FindProperty ("m_NoiseTexture").objectReferenceValue = noiseTexture;
+						so.ApplyModifiedProperties ();
+					}
+				}
+			}
+
 			serializedObject.Update();
 
 			//================
@@ -57,8 +84,12 @@ namespace Coffee.UIExtensions.Editors
 			EditorGUILayout.PropertyField(_spWidth);
 			EditorGUILayout.PropertyField(_spSoftness);
 			EditorGUILayout.PropertyField(_spColor);
-			EditorGUILayout.PropertyField(_spColorMode);
-			EditorGUILayout.PropertyField(_spNoiseTexture);
+
+			using (new EditorGUI.DisabledGroupScope ((target as UIDissolve).isTMPro))
+			{
+				EditorGUILayout.PropertyField (_spColorMode);
+				EditorGUILayout.PropertyField (_spNoiseTexture);
+			}
 
 			//================
 			// Advanced option.

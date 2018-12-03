@@ -86,7 +86,6 @@ Shader "UI/Hidden/UI-Effect-Transition"
 			float4 _ClipRect;
 			sampler2D _MainTex;
 			sampler2D _TransitionTexture;
-			sampler2D _ParamTex;
 			
 			v2f vert(appdata_t IN)
 			{

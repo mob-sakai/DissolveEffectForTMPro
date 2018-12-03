@@ -58,7 +58,6 @@
 			sampler2D _MainTex;
 			fixed4 _TextureSampleAdd;
 			float4 _ClipRect;
-			sampler2D _ParamTex;
 			
 			struct appdata_t
 			{

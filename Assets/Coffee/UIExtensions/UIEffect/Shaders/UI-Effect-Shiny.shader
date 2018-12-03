@@ -84,7 +84,6 @@ Shader "UI/Hidden/UI-Effect-Shiny"
 			float4 _ClipRect;
 			sampler2D _MainTex;
 			float4 _MainTex_TexelSize;
-			sampler2D _ParamTex;
 
 			v2f vert(appdata_t IN)
 			{

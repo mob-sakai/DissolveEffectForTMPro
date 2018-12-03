@@ -87,8 +87,6 @@ Shader "UI/Hidden/UI-Effect-Dissolve"
 			fixed4 _TextureSampleAdd;
 			float4 _ClipRect;
 			sampler2D _MainTex;
-			sampler2D _NoiseTex;
-			sampler2D _ParamTex;
 			
 			v2f vert(appdata_t IN)
 			{

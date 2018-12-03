@@ -213,4 +213,7 @@ half4 ApplyColorEffect(half4 color, half4 factor)
 	return color;
 }
 
+
+sampler2D _NoiseTex;
+sampler2D _ParamTex;
 #endif // UI_EFFECT_INCLUDED

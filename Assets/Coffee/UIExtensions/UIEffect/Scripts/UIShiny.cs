@@ -322,10 +322,11 @@ namespace Coffee.UIExtensions
 			if (!isActiveAndEnabled)
 				return;
 
+			bool isText = isTMPro || graphic is Text;
 			float normalizedIndex = ptex.GetNormalizedIndex(this);
 
 			// rect.
-			Rect rect = m_EffectArea.GetEffectArea(vh, graphic);
+			Rect rect = m_EffectArea.GetEffectArea (vh, rectTransform.rect);
 
 			// rotation.
 			float rad = m_Rotation * Mathf.Deg2Rad;
@@ -334,25 +335,13 @@ namespace Coffee.UIExtensions
 			dir = dir.normalized;
 
 			// Calculate vertex position.
-			bool effectEachCharacter = graphic is Text && m_EffectArea == EffectArea.Character;
-
 			UIVertex vertex = default(UIVertex);
 			Vector2 nomalizedPos;
 			Matrix2x3 localMatrix = new Matrix2x3(rect, dir.x, dir.y);	// Get local matrix.
 			for (int i = 0; i < vh.currentVertCount; i++)
 			{
 				vh.PopulateUIVertex(ref vertex, i);
-
-
-				// Normalize vertex position by local matrix.
-				if (effectEachCharacter)
-				{
-					nomalizedPos = localMatrix * splitedCharacterPosition[i % 4];
-				}
-				else
-				{
-					nomalizedPos = localMatrix * vertex.position;
-				}
+				m_EffectArea.GetNormalizedFactor (i, localMatrix, vertex.position, isText, out nomalizedPos);
 
 				vertex.uv0 = new Vector2(
 					Packer.ToFloat(vertex.uv0.x, vertex.uv0.y),

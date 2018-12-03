@@ -255,30 +255,20 @@ namespace Coffee.UIExtensions
 			}
 
 			// rect.
+			bool isText = isTMPro || graphic is Text;
 			var tex = transitionTexture;
 			var aspectRatio = m_KeepAspectRatio && tex ? ((float)tex.width) / tex.height : -1;
-			Rect rect = m_EffectArea.GetEffectArea(vh, graphic, aspectRatio);
+			Rect rect = m_EffectArea.GetEffectArea (vh, rectTransform.rect, aspectRatio);
 
 			// Set prameters to vertex.
 			float normalizedIndex = ptex.GetNormalizedIndex(this);
 			UIVertex vertex = default(UIVertex);
-			bool effectEachCharacter = graphic is Text && m_EffectArea == EffectArea.Character;
 			float x, y;
 			int count = vh.currentVertCount;
 			for (int i = 0; i < count; i++)
 			{
 				vh.PopulateUIVertex(ref vertex, i);
-
-				if (effectEachCharacter)
-				{
-					x = splitedCharacterPosition[i % 4].x;
-					y = splitedCharacterPosition[i % 4].y;
-				}
-				else
-				{
-					x = Mathf.Clamp01(vertex.position.x / rect.width + 0.5f);
-					y = Mathf.Clamp01(vertex.position.y / rect.height + 0.5f);
-				}
+				m_EffectArea.GetPositionFactor (i, rect, vertex.position, isText, isTMPro, out x, out y);
 
 				vertex.uv0 = new Vector2(
 					Packer.ToFloat(vertex.uv0.x, vertex.uv0.y),

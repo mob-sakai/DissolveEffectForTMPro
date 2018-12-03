@@ -278,37 +278,36 @@ namespace Coffee.UIExtensions
 			if (!isActiveAndEnabled)
 				return;
 
+			bool isText = isTMPro || graphic is Text;
 			float normalizedIndex = ptex.GetNormalizedIndex(this);
 
 			// rect.
 			var tex = noiseTexture;
 			var aspectRatio = m_KeepAspectRatio && tex ? ((float)tex.width) / tex.height : -1;
-			Rect rect = m_EffectArea.GetEffectArea(vh, graphic, aspectRatio);
+			Rect rect = m_EffectArea.GetEffectArea(vh, rectTransform.rect, aspectRatio);
 
 			// Calculate vertex position.
 			UIVertex vertex = default(UIVertex);
-			bool effectEachCharacter = graphic is Text && m_EffectArea == EffectArea.Character;
 			float x, y;
 			int count = vh.currentVertCount;
 			for (int i = 0; i < count; i++)
 			{
 				vh.PopulateUIVertex(ref vertex, i);
+				m_EffectArea.GetPositionFactor (i, rect, vertex.position, isText, isTMPro, out x, out y);
 
-				if (effectEachCharacter)
+				if(isTMPro)
 				{
-					x = splitedCharacterPosition[i % 4].x;
-					y = splitedCharacterPosition[i % 4].y;
+					vertex.uv2 = new Vector2 (
+							Packer.ToFloat (x, y, normalizedIndex), 0
+					);
 				}
 				else
 				{
-					x = Mathf.Clamp01(vertex.position.x / rect.width + 0.5f);
-					y = Mathf.Clamp01(vertex.position.y / rect.height + 0.5f);
+					vertex.uv0 = new Vector2(
+						Packer.ToFloat(vertex.uv0.x, vertex.uv0.y),
+						Packer.ToFloat(x, y, normalizedIndex)
+					);
 				}
-
-				vertex.uv0 = new Vector2(
-					Packer.ToFloat(vertex.uv0.x, vertex.uv0.y),
-					Packer.ToFloat(x, y, normalizedIndex)
-				);
 
 				vh.SetUIVertex(vertex, i);
 			}

@@ -1,4 +1,4 @@
-Shader "TextMeshPro/Sprite"
+Shader "TextMeshPro/Sprite Dissolve"
 {
 	Properties
 	{
@@ -15,6 +15,10 @@ Shader "TextMeshPro/Sprite"
 		_ClipRect ("Clip Rect", vector) = (-32767, -32767, 32767, 32767)
 
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
+            
+        _NoiseTex("Noise Texture (A)", 2D) = "white" {}
+        
+        [KeywordEnum(Multiply, Fill, Add, Subtract)] _ColorMode ("Color mode", Float) = 0
 	}
 
 	SubShader
@@ -55,12 +59,16 @@ Shader "TextMeshPro/Sprite"
 
 			#pragma multi_compile __ UNITY_UI_CLIP_RECT
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
+            
+            #include "Assets/Coffee/UIExtensions/UIEffect/Shaders/UI-Effect.cginc"
+            #pragma shader_feature __ _COLORMODE_ADD _COLORMODE_SUBTRACT _COLORMODE_FILL
 			
 			struct appdata_t
 			{
 				float4 vertex   : POSITION;
 				float4 color    : COLOR;
 				float2 texcoord : TEXCOORD0;
+                float2  texcoord2       : TEXCOORD2;
 			};
 
 			struct v2f
@@ -69,6 +77,7 @@ Shader "TextMeshPro/Sprite"
 				fixed4 color    : COLOR;
 				half2 texcoord  : TEXCOORD0;
 				float4 worldPosition : TEXCOORD1;
+                half3   dissolveParam   : TEXCOORD2;
 			};
 			
 			fixed4 _Color;
@@ -88,6 +97,9 @@ Shader "TextMeshPro/Sprite"
 				#endif
 				
 				OUT.color = IN.color * _Color;
+                
+                OUT.dissolveParam = UnpackToVec3(IN.texcoord2.x);
+
 				return OUT;
 			}
 
@@ -104,6 +116,8 @@ Shader "TextMeshPro/Sprite"
 				#ifdef UNITY_UI_ALPHACLIP
 					clip (color.a - 0.001);
 				#endif
+                
+                APPLY_DISSOLVE(color, IN.dissolveParam, color);
 
 				return color;
 			}

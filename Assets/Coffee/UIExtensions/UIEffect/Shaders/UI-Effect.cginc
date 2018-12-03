@@ -193,13 +193,13 @@ fixed4 ApplyToneEffect(fixed4 color, fixed factor)
 // Apply color effect.
 half4 ApplyColorEffect(half4 color, half4 factor)
 {
-	#ifdef FILL
+	#if FILL || _COLORMODE_FILL
 	color.rgb = lerp(color.rgb, factor.rgb, factor.a);
 
-	#elif ADD
+	#elif ADD || _COLORMODE_ADD
 	color.rgb += factor.rgb * factor.a;
 
-	#elif SUBTRACT
+	#elif SUBTRACT || _COLORMODE_SUBTRACT
 	color.rgb -= factor.rgb * factor.a;
 
 	#else
@@ -216,4 +216,17 @@ half4 ApplyColorEffect(half4 color, half4 factor)
 
 sampler2D _NoiseTex;
 sampler2D _ParamTex;
+
+#define APPLY_DISSOLVE(color, dissolveParam, alpha) \
+fixed4 param1 = tex2D(_ParamTex, float2(0.25, dissolveParam.z)); \
+fixed location = param1.x; \
+fixed width = param1.y/4; \
+fixed dis_softness = param1.z; \
+fixed3 dissolveColor = tex2D(_ParamTex, float2(0.75, dissolveParam.z)).rgb; \
+float cutout = tex2D(_NoiseTex, dissolveParam.xy).a; \
+float factor = cutout - location * ( 1 + width ) + width; \
+fixed edgeLerp = step(factor, color.a) * saturate((width - factor)*16/ dis_softness); \
+color = ApplyColorEffect(color, fixed4(dissolveColor, edgeLerp)); \
+alpha *= saturate((factor)*32/ dis_softness);
+
 #endif // UI_EFFECT_INCLUDED

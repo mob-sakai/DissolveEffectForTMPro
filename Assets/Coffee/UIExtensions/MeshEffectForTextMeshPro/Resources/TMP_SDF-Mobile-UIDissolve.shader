@@ -49,6 +49,8 @@ Properties {
 	_StencilReadMask	("Stencil Read Mask", Float) = 255
 	
 	_ColorMask			("Color Mask", Float) = 15
+	
+	_NoiseTex("Noise Texture (A)", 2D) = "white" {}
 }
 
 SubShader {
@@ -89,7 +91,10 @@ SubShader {
 
 		#include "UnityCG.cginc"
 		#include "UnityUI.cginc"
-		#include "TMPro_Properties.cginc"
+		#include "Assets/TextMesh Pro/Resources/Shaders/TMPro_Properties.cginc"
+		
+		#include "Assets/Coffee/UIExtensions/UIEffect/Shaders/UI-Effect.cginc"
+		#pragma shader_feature __ ADD SUBTRACT FILL
 
 		struct vertex_t {
 			float4	vertex			: POSITION;
@@ -97,6 +102,7 @@ SubShader {
 			fixed4	color			: COLOR;
 			float2	texcoord0		: TEXCOORD0;
 			float2	texcoord1		: TEXCOORD1;
+			float2	texcoord2		: TEXCOORD2;
 		};
 
 		struct pixel_t {
@@ -110,6 +116,7 @@ SubShader {
 			float4	texcoord1		: TEXCOORD3;			// Texture UV, alpha, reserved
 			half2	underlayParam	: TEXCOORD4;			// Scale(x), Bias(y)
 		#endif
+			half3	dissolveParam	: TEXCOORD5;
 		};
 
 
@@ -177,6 +184,7 @@ SubShader {
 				float4(input.texcoord0 + layerOffset, input.color.a, 0),
 				half2(layerScale, layerBias),
 			#endif
+				UnpackToVec3(input.texcoord2.x),
 			};
 
 			return output;
@@ -214,6 +222,8 @@ SubShader {
 		#if (UNDERLAY_ON | UNDERLAY_INNER)
 			c *= input.texcoord1.z;
 		#endif
+		
+		APPLY_DISSOLVE(c, input.dissolveParam, c);
 
 		#if UNITY_UI_ALPHACLIP
 			clip(c.a - 0.001);
@@ -225,5 +235,5 @@ SubShader {
 	}
 }
 
-CustomEditor "TMPro.EditorUtilities.TMP_SDFShaderGUI"
+CustomEditor "TMP_SDFShaderGUI_Dissolve"
 }

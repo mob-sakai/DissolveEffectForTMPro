@@ -8,7 +8,7 @@ namespace Coffee.UIExtensions
 	/// <summary>
 	/// Dissolve effect for uGUI.
 	/// </summary>
-	[AddComponentMenu("UI/UIEffect/UIDissolve", 3)]
+	[AddComponentMenu("UI/MeshEffectForTextMeshPro/UIDissolve", 3)]
 	public class UIDissolve : UIEffectBase
 	{
 		//################################

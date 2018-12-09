@@ -193,13 +193,13 @@ fixed4 ApplyToneEffect(fixed4 color, fixed factor)
 // Apply color effect.
 half4 ApplyColorEffect(half4 color, half4 factor)
 {
-	#if FILL || _COLORMODE_FILL
+	#if FILL
 	color.rgb = lerp(color.rgb, factor.rgb, factor.a);
 
-	#elif ADD || _COLORMODE_ADD
+	#elif ADD
 	color.rgb += factor.rgb * factor.a;
 
-	#elif SUBTRACT || _COLORMODE_SUBTRACT
+	#elif SUBTRACT
 	color.rgb -= factor.rgb * factor.a;
 
 	#else

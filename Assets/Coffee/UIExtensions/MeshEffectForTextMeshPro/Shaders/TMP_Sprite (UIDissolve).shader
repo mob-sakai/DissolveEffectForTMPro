@@ -1,4 +1,4 @@
-Shader "TextMeshPro/Sprite Dissolve"
+Shader "TextMeshPro/Sprite (UIDissolve)"
 {
 	Properties
 	{
@@ -17,8 +17,6 @@ Shader "TextMeshPro/Sprite Dissolve"
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
             
         _NoiseTex("Noise Texture (A)", 2D) = "white" {}
-        
-        [KeywordEnum(Multiply, Fill, Add, Subtract)] _ColorMode ("Color mode", Float) = 0
 	}
 
 	SubShader
@@ -61,7 +59,7 @@ Shader "TextMeshPro/Sprite Dissolve"
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
             
             #include "Assets/Coffee/UIExtensions/UIEffect/Shaders/UI-Effect.cginc"
-            #pragma shader_feature __ _COLORMODE_ADD _COLORMODE_SUBTRACT _COLORMODE_FILL
+            #pragma shader_feature __ ADD SUBTRACT FILL
 			
 			struct appdata_t
 			{
@@ -124,4 +122,5 @@ Shader "TextMeshPro/Sprite Dissolve"
 		ENDCG
 		}
 	}
+CustomEditor "TMP_SDFShaderGUI_Dissolve"
 }

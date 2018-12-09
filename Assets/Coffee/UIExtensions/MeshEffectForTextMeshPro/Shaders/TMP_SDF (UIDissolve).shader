@@ -1,4 +1,4 @@
-Shader "TextMeshPro/Dissolve" {
+Shader "TextMeshPro/Distance Field (UIDissolve)" {
 
 Properties {
 	_FaceTex			("Face Texture", 2D) = "white" {}

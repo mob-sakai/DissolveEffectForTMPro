@@ -2,6 +2,8 @@
 using UnityEditorInternal;
 using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace Coffee.UIExtensions.Editors
 {
@@ -10,7 +12,7 @@ namespace Coffee.UIExtensions.Editors
 	/// </summary>
 	[CustomEditor(typeof(UIDissolve))]
 	[CanEditMultipleObjects]
-	public class UIDissolveEditor : Editor
+	public class UIDissolveEditor : BaseMeshEffectEditor
 	{
 		static int s_NoiseTexId;
 
@@ -20,8 +22,10 @@ namespace Coffee.UIExtensions.Editors
 		/// <summary>
 		/// This function is called when the object becomes enabled and active.
 		/// </summary>
-		protected void OnEnable()
+		protected override void OnEnable()
 		{
+			base.OnEnable ();
+
 			_spMaterial = serializedObject.FindProperty("m_EffectMaterial");
 			_spEffectFactor = serializedObject.FindProperty("m_EffectFactor");
 			_spEffectArea = serializedObject.FindProperty("m_EffectArea");
@@ -37,8 +41,11 @@ namespace Coffee.UIExtensions.Editors
 			_spUpdateMode = player.FindPropertyRelative("updateMode");
 
 			s_NoiseTexId = Shader.PropertyToID ("_NoiseTex");
-		}
 
+			_shader = Shader.Find ("TextMeshPro/Distance Field (UIDissolve)");
+			_mobileShader = Shader.Find ("TextMeshPro/Mobile/Distance Field (UIDissolve)");
+			_spriteShader = Shader.Find ("TextMeshPro/Sprite (UIDissolve)");
+		}
 
 		/// <summary>
 		/// Implement this function to make a custom inspector.
@@ -125,7 +132,20 @@ namespace Coffee.UIExtensions.Editors
 				}
 			}
 
+			var c = target as UIDissolve;
+			c.ShowTMProWarning (_shader, _mobileShader, _spriteShader, mat => {
+				if(mat.shader == _spriteShader)
+				{
+					mat.shaderKeywords = c.material.shaderKeywords;
+					mat.SetTexture ("_NoiseTex", c.material.GetTexture ("_NoiseTex"));
+				}
+			});
+			ShowCanvasChannelsWarning ();
+
+			ShowMaterialEditors (c.materials, 1, c.materials.Length - 1);
+
 			serializedObject.ApplyModifiedProperties();
+
 		}
 
 		//################################
@@ -142,5 +162,9 @@ namespace Coffee.UIExtensions.Editors
 		SerializedProperty _spKeepAspectRatio;
 		SerializedProperty _spDuration;
 		SerializedProperty _spUpdateMode;
+
+		Shader _shader;
+		Shader _mobileShader;
+		Shader _spriteShader;
 	}
 }

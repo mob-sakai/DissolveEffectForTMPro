@@ -6,6 +6,11 @@ using UnityEngine.UI;
 #if !NOT_USE_TMPRO
 using System.Collections.Generic;
 using TMPro;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.IO;
+using System.Linq;
+#endif
 #endif
 
 namespace Coffee.UIExtensions
@@ -59,6 +64,11 @@ namespace Coffee.UIExtensions
 		/// The RectTransform attached to this GameObject.
 		/// </summary>
 		public RectTransform rectTransform { get { Initialize (); return _rectTransform; } }
+
+		/// <summary>
+		/// Additional canvas shader channels to use this component.
+		/// </summary>
+		public virtual AdditionalCanvasShaderChannels requiredChannels { get { return AdditionalCanvasShaderChannels.TexCoord1; } }
 
 		/// <summary>
 		/// Is TextMeshPro or TextMeshProUGUI attached to this GameObject?
@@ -200,6 +210,98 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		public void ShowTMProWarning (Shader shader, Shader mobileShader, Shader spriteShader, System.Action<Material> onCreatedMaterial)
+		{
+#if UNITY_EDITOR && !NOT_USE_TMPRO
+			if(!textMeshPro || !textMeshPro.fontSharedMaterial)
+			{
+				return;
+			}
+
+			// Is the material preset for dissolve?
+			Material m = textMeshPro.fontSharedMaterial;
+			if (m.shader != shader && m.shader != mobileShader)
+			{
+				EditorGUILayout.BeginHorizontal ();
+				EditorGUILayout.HelpBox (string.Format("{0} requires '{1}' or '{2}' as a shader for material preset.", GetType().Name, shader.name, mobileShader.name), MessageType.Warning);
+				if(GUILayout.Button ("Fix"))
+				{
+					var correctShader = m.shader.name.Contains ("Mobile") ? mobileShader : shader;
+					textMeshPro.fontSharedMaterial = ModifyTMProMaterialPreset (m, correctShader, onCreatedMaterial);
+				}
+				EditorGUILayout.EndHorizontal ();
+				return;
+			}
+
+			// Is the sprite asset for dissolve?
+			TMP_SpriteAsset spriteAsset = textMeshPro.spriteAsset ?? TMP_Settings.GetSpriteAsset ();
+			m = spriteAsset.material;
+			if (m && m.shader != spriteShader && textMeshPro.richText && textMeshPro.text.Contains("<sprite="))
+			{
+				EditorGUILayout.BeginHorizontal ();
+				EditorGUILayout.HelpBox (string.Format ("{0} requires '{1}' as a shader for sprite asset.", GetType().Name,spriteShader.name), MessageType.Warning);
+				if (GUILayout.Button ("Fix"))
+				{
+					GetComponentsInChildren<TMP_SubMesh> ().Select (x => x.gameObject).ToList ().ForEach (DestroyImmediate);
+					GetComponentsInChildren<TMP_SubMeshUI> ().Select (x => x.gameObject).ToList ().ForEach (DestroyImmediate);
+					textMeshPro.spriteAsset = ModifyTMProSpriteAsset (m, spriteShader, onCreatedMaterial);
+				}
+				EditorGUILayout.EndHorizontal ();
+				return;
+			}
+		}
+
+		Material ModifyTMProMaterialPreset (Material baseMaterial, Shader shader, System.Action<Material> onCreatedMaterial)
+		{
+			string path = AssetDatabase.GetAssetPath (baseMaterial);
+			string filename = Path.GetFileNameWithoutExtension (path) + " (" + GetType ().Name + ")";
+			Material mat = Resources.Load<Material> (TMP_Settings.defaultFontAssetPath + filename);
+			if (!mat)
+			{
+				mat = new Material (baseMaterial)
+				{
+					shaderKeywords = baseMaterial.shaderKeywords,
+					shader = shader,
+				};
+				onCreatedMaterial (mat);
+				AssetDatabase.CreateAsset (mat, Path.GetDirectoryName (path) + "/" + filename + ".mat");
+
+				EditorUtility.FocusProjectWindow ();
+				EditorGUIUtility.PingObject (mat);
+			}
+			else
+			{
+				mat.shader = shader;
+			}
+			EditorUtility.SetDirty (mat);
+			return mat;
+		}
+
+		TMP_SpriteAsset ModifyTMProSpriteAsset (Material baseMaterial, Shader shader, System.Action<Material> onCreatedMaterial)
+		{
+			string path = AssetDatabase.GetAssetPath (baseMaterial);
+			string filename = Path.GetFileNameWithoutExtension (path) + " (" + this.GetType ().Name + ")";
+			TMP_SpriteAsset spriteAsset = Resources.Load<TMP_SpriteAsset> (TMP_Settings.defaultSpriteAssetPath + filename);
+			if (!spriteAsset)
+			{
+				AssetDatabase.CopyAsset (path, Path.GetDirectoryName (path) + "/" + filename + ".mat");
+				spriteAsset = Resources.Load<TMP_SpriteAsset> (TMP_Settings.defaultSpriteAssetPath + filename);
+				spriteAsset.material.shader = shader;
+				spriteAsset.material.name = shader.name;
+				onCreatedMaterial (spriteAsset.material);
+
+				EditorUtility.FocusProjectWindow ();
+				EditorGUIUtility.PingObject (spriteAsset);
+			}
+			else
+			{
+				spriteAsset.material.shader = shader;
+			}
+			EditorUtility.SetDirty (spriteAsset);
+			return spriteAsset;
+#endif
+		}
+
 
 		//################################
 		// Protected Members.
@@ -244,6 +346,15 @@ namespace Coffee.UIExtensions
 				GraphicRebuildTracker.TrackGraphic (graphic);
 			}
 #endif
+			if (graphic)
+			{
+				AdditionalCanvasShaderChannels channels = requiredChannels;
+				var canvas = graphic.canvas;
+				if (canvas && (canvas.additionalShaderChannels & channels) != channels)
+				{
+					Debug.LogWarningFormat (this, "Enable {1} of Canvas.additionalShaderChannels to use {0}.", GetType ().Name, channels);
+				}
+			}
 		}
 
 		/// <summary>

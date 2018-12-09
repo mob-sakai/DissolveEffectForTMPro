@@ -1,21 +1,21 @@
 # Changelog
 
-## [v0.2.0](https://github.com/mob-sakai/MeshEffectForTextMeshPro/tree/v0.2.0) (2018-12-05)
+## [v1.0.0](https://github.com/mob-sakai/DissolveEffectForTMPro/tree/v1.0.0) (2018-12-09)
 
-[Full Changelog](https://github.com/mob-sakai/MeshEffectForTextMeshPro/compare/v0.1.0...v0.2.0)
+[Full Changelog](https://github.com/mob-sakai/DissolveEffectForTMPro/compare/a9c4ec4e72a055ca5e5c24f6a75c6720f0f6fd7f...v1.0.0)
 
-**Implemented enhancements:**
+DissolveEffectForTMPro provide dissolve effect component (from [UIEffect](https://github.com/mob-sakai/UIEffect)) for TextMeshPro in Unity.
 
-- Add a symbol “NOT\_USE\_TMPRO” for project not using TMPro [\#4](https://github.com/mob-sakai/MeshEffectForTextMeshPro/issues/4)
-- Add component menu [\#3](https://github.com/mob-sakai/MeshEffectForTextMeshPro/issues/3)
+It works well not only for standard Graphic components (Image, RawImage, Text, etc.) but also for TextMeshPro and TextMeshProUGUI.
 
-## [v0.1.0](https://github.com/mob-sakai/MeshEffectForTextMeshPro/tree/v0.1.0) (2018-11-28)
-
-[Full Changelog](https://github.com/mob-sakai/MeshEffectForTextMeshPro/compare/a9c4ec4e72a055ca5e5c24f6a75c6720f0f6fd7f...v0.1.0)
+![](https://user-images.githubusercontent.com/12690315/49694176-6b7a2c80-fbc8-11e8-9461-c3595736b4d5.png)
 
 **Implemented enhancements:**
 
-- Base class for mesh effect [\#1](https://github.com/mob-sakai/MeshEffectForTextMeshPro/issues/1)
+- Support font tag [\#4](https://github.com/mob-sakai/DissolveEffectForTMPro/issues/4)
+- Support sprite tag [\#3](https://github.com/mob-sakai/DissolveEffectForTMPro/issues/3)
+- Easy to set up [\#2](https://github.com/mob-sakai/DissolveEffectForTMPro/issues/2)
+- Dissolve effect for TMPro [\#1](https://github.com/mob-sakai/DissolveEffectForTMPro/issues/1)
 
 
 

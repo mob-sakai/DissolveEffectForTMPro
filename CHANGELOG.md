@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.1](https://github.com/mob-sakai/DissolveEffectForTMPro/tree/v1.0.1) (2018-12-09)
+
+[Full Changelog](https://github.com/mob-sakai/DissolveEffectForTMPro/compare/v1.0.0...v1.0.1)
+
+**Fixed bugs:**
+
+- Demo scene in build [\#6](https://github.com/mob-sakai/DissolveEffectForTMPro/issues/6)
+
 ## [v1.0.0](https://github.com/mob-sakai/DissolveEffectForTMPro/tree/v1.0.0) (2018-12-09)
 
 [Full Changelog](https://github.com/mob-sakai/DissolveEffectForTMPro/compare/a9c4ec4e72a055ca5e5c24f6a75c6720f0f6fd7f...v1.0.0)

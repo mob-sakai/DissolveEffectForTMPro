@@ -11,7 +11,7 @@ DissolveEffectForTMPro provide dissolve effect component for TextMeshPro in Unit
 
 [![](https://img.shields.io/github/release/mob-sakai/DissolveEffectForTMPro.svg?label=latest%20version)](https://github.com/mob-sakai/DissolveEffectForTMPro/releases)
 [![](https://img.shields.io/github/release-date/mob-sakai/DissolveEffectForTMPro.svg)](https://github.com/mob-sakai/DissolveEffectForTMPro/releases)
-![](https://img.shields.io/badge/unity-5.5%2B-green.svg)
+![](https://img.shields.io/badge/unity-5.6%2B-green.svg)
 [![](https://img.shields.io/github/license/mob-sakai/DissolveEffectForTMPro.svg)](https://github.com/mob-sakai/DissolveEffectForTMPro/blob/master/LICENSE.txt)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.2](https://github.com/mob-sakai/DissolveEffectForTMPro/tree/v1.0.2) (2018-12-09)
+
+[Full Changelog](https://github.com/mob-sakai/DissolveEffectForTMPro/compare/v1.0.1...v1.0.2)
+
+**Fixed bugs:**
+
+- WebGL demo resolution is incorrect [\#7](https://github.com/mob-sakai/DissolveEffectForTMPro/issues/7)
+
 ## [v1.0.1](https://github.com/mob-sakai/DissolveEffectForTMPro/tree/v1.0.1) (2018-12-09)
 
 [Full Changelog](https://github.com/mob-sakai/DissolveEffectForTMPro/compare/v1.0.0...v1.0.1)

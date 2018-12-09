@@ -1,10 +1,10 @@
 {
-  "name": "MeshEffectForTextMeshPro",
-  "version": "0.2.0",
+  "name": "DissolveEffectForTMPro",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mob-sakai/MeshEffectForTextMeshPro.git"
+    "url": "git+https://github.com/mob-sakai/DissolveEffectForTMPro.git"
   },
-  "src": "Assets/Coffee/UIExtensions/MeshEffectForTextMeshPro",
+  "src": "Assets/Coffee/UIExtensions",
   "license": "MIT"
 }

@@ -75,7 +75,7 @@ It works well not only for standard Graphic components (Image, RawImage, Text, e
 
 ##### Requirement
 
-* Unity 5.5+ *(including Unity 2019.x)*
+* Unity 5.6+ *(including Unity 2019.x)*
 * TextMeshPro v1.0.0+
 
 
